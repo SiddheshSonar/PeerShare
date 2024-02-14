@@ -1,0 +1,22 @@
+syntax = "proto3";
+package authService;
+option objc_class_prefix = "RTG";
+
+message AccountCredentials {
+  string username = 1;
+  string password = 2;
+}
+
+message OauthCredentials {
+  string token = 3;
+  uint32 timeoutSeconds = 4;
+}
+
+message LogMessage {
+  string message = 5;
+}
+
+service AuthServiceRoutes {
+  rpc Login(AccountCredentials) returns (OauthCredentials) {}
+  rpc Logout(OauthCredentials) returns (LogMessage) {}
+}
