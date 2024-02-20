@@ -2,6 +2,7 @@ var os = require('os');
 var express = require('express');
 var app = express();
 var http = require('http');
+var cors = require('cors');
 
 var socketIO = require('socket.io');
 
@@ -42,6 +43,7 @@ grpcServer.bindAsync(
 	}
 )
 
+app.use(cors());
 
 app.use(express.static('public'))
 
