@@ -1,0 +1,1 @@
+javac src/com/peershare/rmiinterface/RMIInterface.java src/com/peershare/rmiserver/ServerOperation.java src/com/peershare/rmiclient/ClientOperation.java
