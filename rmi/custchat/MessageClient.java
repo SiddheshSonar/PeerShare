@@ -30,7 +30,9 @@ public class MessageClient {
                 try {
                     while (true) {
                         String message = messageService.receiveMessage(name);
-
+                        if (!message.isEmpty()) {
+                            receivedMessages.add(message);
+                        }
                         // receivedMessages.add(messageService.receiveMessage(name));
                         Thread.sleep(1000); // Adjust as needed for refresh rate
                     }
@@ -45,10 +47,11 @@ public class MessageClient {
                 System.out.println("1. Send message");
                 System.out.println("2. View messages");
                 System.out.println("3. Exit");
+                System.out.println("4. Clear Screen");
 
                 System.out.print("Choose an option: ");
                 int option = scanner.nextInt();
-                scanner.nextLine(); // Consume newline character
+                scanner.nextLine();
 
                 switch (option) {
                     case 1:
@@ -64,14 +67,18 @@ public class MessageClient {
                                 System.out.println(count + ". " + msg);
                                 count++;
                             }
-                            receivedMessages.clear(); // Clear the list after viewing
                         } else {
-                            System.out.println("No messages received.");
+                            System.out.println("No messages");
                         }
                         break;
                     case 3:
                         System.out.println("Exiting...");
+                        System.exit(1);
                         return;
+                    case 4:
+                        System.out.print("\033[H\033[2J");
+                        System.out.flush();
+                        break;
                     default:
                         System.out.println("Invalid option");
                 }

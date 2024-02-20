@@ -1,232 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import React, { useState } from 'react';
 
 const App = () => {
-  const [isChannelReady, setIsChannelReady] = useState(false);
-  const [isInitiator, setIsInitiator] = useState(false);
-  const [isStarted, setIsStarted] = useState(false);
-  const [pc, setPc] = useState(null);
-  const [room, setRoom] = useState('');
 
-  const pcConfig = {
-    iceServers: [
-      { urls: [
-        "stun:bn-turn1.xirsys.com"
-      ] },
-      {
-        username: 
-        "67JVSBLop5DqymSoHACKdBZmSQz_19LJX8Hk-bkVSGNu_FhzuoxZ52EFYmEX43-0AAAAAGXLXc9zdGVwaGVuMDM=", 
-        credential: 
-        "d588ed62-ca69-11ee-a4f6-0242ac140004",
-        urls: [
-          "turn:bn-turn1.xirsys.com:80?transport=udp",
-          "turn:bn-turn1.xirsys.com:3478?transport=udp",
-          "turn:bn-turn1.xirsys.com:80?transport=tcp",
-          "turn:bn-turn1.xirsys.com:3478?transport=tcp",
-          "turns:bn-turn1.xirsys.com:443?transport=tcp",
-          "turns:bn-turn1.xirsys.com:5349?transport=tcp"
-        ],
-      },
-    ],
-  
-  }
+    const [isConnected, setIsConnected] = useState(false);
+    csont [file, setFile] = useState(null);
+    
 
-  // Prompting for room name:
-  useEffect(() => {
-    const roomName = prompt('Enter room name:');
-    setRoom(roomName);
-  }, []);
+    const handleConnection = () => {
+        console.log('Sending offer to peer');
 
-  //Initializing socket.io
-  const socket = io.connect("http://localhost:3000");
+        // handle connection logic here
 
-  //Ask server to add in the room if room name is provided by the user
-  useEffect(() => {
-    if (room !== '') {
-      socket.emit('create or join', room);
-      console.log('Attempted to create or join room', room);
-    }
-  }, [room]);
-
-  // Defining socket events
-
-  // Event - Client has created the room i.e. is the first member of the room
-  socket.on('created', (room) => {
-    console.log('Created room ' + room);
-    setIsInitiator(true);
-  });
-
-  // Event - Room is full
-  socket.on('full', (room) => {
-    console.log('Room ' + room + ' is full');
-  });
-
-  // Event - Another client tries to join room
-  socket.on('join', (room) => {
-    console.log('Another peer made a request to join room ' + room);
-    console.log('This peer is the initiator of room ' + room + '!');
-    setIsChannelReady(true);
-  });
-
-  // Event - Client has joined the room
-  socket.on('joined', (room) => {
-    console.log('joined: ' + room);
-    setIsChannelReady(true);
-  });
-
-  // Event - server asks to log a message
-  socket.on('log', (array) => {
-    console.log.apply(console, array);
-  });
-
-  // Event - for sending meta for establishing a direct connection using WebRTC
-  // The Driver code
-  socket.on('message', (message, room) => {
-    console.log('Client received message:', message, room);
-    if (message === 'gotuser') {
-      maybeStart();
-    } else if (message.type === 'offer') {
-      if (!isInitiator && !isStarted) {
-        maybeStart();
-      }
-      pc.setRemoteDescription(new RTCSessionDescription(message));
-      doAnswer();
-    } else if (message.type === 'answer' && isStarted) {
-      pc.setRemoteDescription(new RTCSessionDescription(message));
-    } else if (message.type === 'candidate' && isStarted) {
-      const candidate = new RTCIceCandidate({
-        sdpMLineIndex: message.label,
-        candidate: message.candidate
-      });
-      pc.addIceCandidate(candidate);
-    } else if (message === 'bye' && isStarted) {
-      handleRemoteHangup();
-    }
-  });
-
-  // Function to send message in a room
-  const sendMessage = (message, room) => {
-    console.log('Client sending message: ', message, room);
-    socket.emit('message', message, room);
-  };
-
-  // If initiator, create the peer connection
-  const maybeStart = () => {
-    console.log('>>>>>>> maybeStart() ', isStarted, isChannelReady);
-    if (!isStarted && isChannelReady) {
-      console.log('>>>>>> creating peer connection');
-      createPeerConnection();
-      setIsStarted(true);
-      console.log('isInitiator', isInitiator);
-      if (isInitiator) {
-        doCall();
-      }
-    }
-  };
-
-  // Sending bye if user closes the window
-  useEffect(() => {
-    const onBeforeUnload = () => {
-      sendMessage('bye', room);
+        setIsConnected(true);
     };
-    window.addEventListener('beforeunload', onBeforeUnload);
-    return () => {
-      window.removeEventListener('beforeunload', onBeforeUnload);
-    };
-  }, [room]);
 
-  // Creating peer connection
-  const createPeerConnection = () => {
-    try {
-      const newPc = new RTCPeerConnection(pcConfig);
-      newPc.onicecandidate = handleIceCandidate;
-      console.log('Created RTCPeerConnnection');
-      setPc(newPc);
-    } catch (e) {
-      console.log('Failed to create PeerConnection, exception: ' + e.message);
-      alert('Cannot create RTCPeerConnection object.');
+    const handleDisconnection = () => {
+
+        // handle disconnection logic here
+
+        setIsConnected(false);
+
     }
-  };
 
-  // Function to handle Ice candidates generated by the browser
-  const handleIceCandidate = (event) => {
-    console.log('icecandidate event: ', event);
-    if (event.candidate) {
-      sendMessage(
-        {
-          type: 'candidate',
-          label: event.candidate.sdpMLineIndex,
-          id: event.candidate.sdpMid,
-          candidate: event.candidate.candidate
-        },
-        room
-      );
-    } else {
-      console.log('End of candidates.');
+    const handleFileSelection = () => {
+
     }
-  };
 
-  const handleCreateOfferError = (event) => {
-    console.log('createOffer() error: ', event);
-  };
+    return (
+        <div style={{
+            padding: "2rem",
+        }}>
+            <h1>Send files peer to peer</h1>
+            <button id="connectbutton" onClick={() => {
+                if (isConnected) {
+                    handleDisconnection();
+                } else {
+                    handleConnection();
+                }
+            }}>
+                {isConnected ? "Disconnect" : "Connect with peer"}
+            </button>
 
-  // Function to create offer
-  const doCall = () => {
-    console.log('Sending offer to peer');
-    pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-  };
-
-  // Function to create answer for the received offer
-  const doAnswer = () => {
-    console.log('Sending answer to peer.');
-    pc.createAnswer().then(setLocalAndSendMessage, onCreateSessionDescriptionError);
-  };
-
-  // Function to set description of local media
-  const setLocalAndSendMessage = (sessionDescription) => {
-    pc.setLocalDescription(sessionDescription);
-    console.log('setLocalAndSendMessage sending message', sessionDescription);
-    sendMessage(sessionDescription, room);
-  };
-
-  const onCreateSessionDescriptionError = (error) => {
-    trace('Failed to create session description: ' + error.toString());
-  };
-
-  const hangup = () => {
-    console.log('Hanging up.');
-    stop();
-    sendMessage('bye', room);
-  };
-
-  const handleRemoteHangup = () => {
-    console.log('Session terminated.');
-    stop();
-    setIsInitiator(false);
-  };
-
-  const stop = () => {
-    setIsStarted(false);
-    pc.close();
-    setPc(null);
-  };
-
-  return (
-    <div>
-      <h1>Send files peer to peer</h1>
-      <button id="connectbutton" onClick={() => {
-        if (connectbutton.innerHTML !== "Connected") {
-          socket.emit("create or join", room);
-          sendMessage("gotuser", room);
-          if (isInitiator) {
-            maybeStart();
-          }
-        }
-        connectbutton.innerHTML = "Connected";
-        // connection logic
-      }}>Connect with peer</button>
-    </div>
-  );
-};
+            {isConnected && (
+                <div>
+                    {/* button for choosing file, button for sending */}
+                    <button
+                        onClick={() => {
+                            // handle file choosing logic here
+                        }}
+                    >Choose file</button>
+                </div>
+            
+            )}
+        </div>
+    )
+}
 
 export default App;

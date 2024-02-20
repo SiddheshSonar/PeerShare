@@ -1,3 +1,7 @@
+import io from 'socket.io-client';
+import 'webrtc-adapter';
+import turnConfig from './config';
+
 var isChannelReady = false;
 var isInitiator = false;
 var isStarted = false;
@@ -9,7 +13,9 @@ var pcConfig = turnConfig;
 
 var room = prompt('Enter room name:');
 
-var socket = io.connect();
+var socket = io.connect(
+    "http://localhost:3000",
+);
 
 if (room !== '') {
     // socket.emit('create or join', room);

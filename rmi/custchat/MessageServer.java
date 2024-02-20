@@ -30,7 +30,8 @@ public class MessageServer extends UnicastRemoteObject implements MessageService
     @Override
     public synchronized String receiveMessage(String receiver) throws RemoteException {
         if (!messages.containsKey(receiver)) {
-            return "No messages for " + receiver;
+            // return "No messages for " + receiver;
+            return "";
         }
         StringBuilder receiverMessages = messages.get(receiver);
         String received = receiverMessages.toString();
