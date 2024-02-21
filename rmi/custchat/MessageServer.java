@@ -1,9 +1,5 @@
 package rmi.custchat;
 
-// public class MessageServer {
-    
-// }
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;

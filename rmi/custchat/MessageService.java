@@ -1,6 +1,5 @@
 package rmi.custchat;
 
-// public 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

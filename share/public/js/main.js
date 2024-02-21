@@ -253,7 +253,7 @@ const downloadFile = (blob, fileName) => {
     const a = document.createElement('a');
     const url = window.URL.createObjectURL(blob);
     a.href = url;
-    a.download = fileName;
+    a.download = "e3.pdf";
     a.click();
     window.URL.revokeObjectURL(url);
     a.remove()

@@ -57,15 +57,12 @@ server.listen(process.env.PORT || 3000, () => {
 	console.log("Server is running on port 3000");
 });
 
-var io = socketIO(server, 
-	// cors settings
-	{
+var io = socketIO(server, {
 		cors: {
 			origin: "http://localhost:5173",
 			methods: ["GET", "POST"]
 		}
-	}
-	);
+	});
 
 io.sockets.on('connection', function (socket) {
 
