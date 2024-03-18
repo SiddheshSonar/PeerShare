@@ -3,7 +3,6 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var cors = require('cors');
-
 var socketIO = require('socket.io');
 
 const PROTO_PATH = __dirname + '/protos/users.proto';
@@ -11,19 +10,19 @@ const grpc = require('@grpc/grpc-js')
 const protoLoader = require('@grpc/proto-loader');
 const { login, logout } = require('./main-ms/main');
 
-// suggested options for similarity to loading grpc.load behavior
+
 const packageDefinition = protoLoader.loadSync(
 	PROTO_PATH,
 	{
 		keepCase: true,
-		longs: String, // JavaScript doesn't support long ints
-		enums: String, // JavaScript doesn't support enum types
+		longs: String,
+		enums: String,
 		defaults: true,
 		oneofs: true
 	}
 )
 const protoDescriptor = grpc.loadPackageDefinition(packageDefinition)
-// grab the authService package from the protobuf file
+
 const authService = protoDescriptor.authService
 
 function getGrpcServer() {
@@ -35,12 +34,11 @@ function getGrpcServer() {
 	return grpcServer
 }
 const grpcServer = getGrpcServer()
+console.clear();
 console.log('Starting gRPC server on port 0.0.0.0:50051...')
 grpcServer.bindAsync(
 	'0.0.0.0:50051',
-	grpc.ServerCredentials.createInsecure(), () => {
-		grpcServer.start()
-	}
+	grpc.ServerCredentials.createInsecure(), () => {}
 )
 
 app.use(cors());
