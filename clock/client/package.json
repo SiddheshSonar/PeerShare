@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "ntp-time": "^2.0.4"
+  }
+}
