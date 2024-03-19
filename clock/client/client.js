@@ -17,7 +17,6 @@ async function sync() {
 	}
 }
 
-// sync clock after every 30s
 setInterval(sync, 5 * 1000);
 
 setInterval(() => {
@@ -32,4 +31,3 @@ setInterval(() => {
     ));
     time = new Date(time.getTime() + 1000);
 }, 1000);
-// sync()
