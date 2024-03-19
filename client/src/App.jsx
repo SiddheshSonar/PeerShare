@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useWorker, WORKER_STATUS } from "@koale/useworker";
+// import { useWorker, WORKER_STATUS } from "@koale/useworker";
+import { useWorkerState, useWorkerFunc, useWorker } from 'use-react-workers';
 import { useToasts } from "react-toast-notifications";
-import { ToastProvider } from "react-toast-notifications";
-import calculateFibonacci from './fibCalc';
+// import { ToastProvider } from "react-toast-notifications";
+// import calculateFibonacci from './fibCalc';
 
 let turn = 0;
 function infiniteLoop() {
@@ -11,18 +12,26 @@ function infiniteLoop() {
   lgoo.style.transform = `rotate(${turn % 360}deg)`;
 }
 
+function calculateFibonacci (number) {
+  if (number <= 1) {
+    return number;
+  }
+  return calculateFibonacci(number - 1) + calculateFibonacci(number - 2);
+};
+
 const App = () => {
   const { addToast } = useToasts();
   const [fibonacci, setFibonacci] = useState('');
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [
-    fibonacciWorker,
-    { status: workerStatus, kill: killWorker }
-  ] = useWorker(
-    calculateFibonacci
-  )
+  // const [
+  //   fibonacciWorker,
+  //   { status: workerStatus, kill: killWorker }
+  // ] = useWorker(
+  //   calculateFibonacci
+  // )
+  const [fibonacciWorker] = useWorkerFunc(calculateFibonacci);
 
 //   const [
 //     fibonacciWorker,
@@ -71,7 +80,7 @@ const App = () => {
       <input type="text" value={input} onChange={handleChange} />
       <button
         type="button"
-        disabled={workerStatus === WORKER_STATUS.RUNNING}
+        // disabled={workerStatus === WORKER_STATUS.RUNNING}
         onClick={() => {
           const n = parseInt(input);
           if (!isNaN(n)) {
@@ -87,10 +96,14 @@ const App = () => {
       </button>
       <button
         type="button"
-        disabled={workerStatus === WORKER_STATUS.RUNNING}
+        // disabled={workerStatus === WORKER_STATUS.RUNNING}
         onClick={handleCalculateWithWorker}
       >
-        {workerStatus === WORKER_STATUS.RUNNING ? "Calculating..." : "Calculate with Worker"}
+        {
+        // workerStatus ===
+        //  WORKER_STATUS.RUNNING
+        false
+         ? "Calculating..." : "Calculate with Worker"}
       </button>
       <p>Fibonacci: {loading ? "Loading" : fibonacci}</p>
       <div style={{
