@@ -7,8 +7,8 @@ async function sync() {
 	try {
 
 		const t = await client.syncTime();
-        console.log("Clock Synced")
         time = t.time;
+        console.log("Clock Synced")
 	} catch (err) {
 		console.log(err);
 	}
