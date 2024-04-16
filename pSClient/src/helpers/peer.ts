@@ -24,7 +24,7 @@ export const PeerConnection = {
         try {
             peer = new Peer(
                 {
-                    host: 'localhost',
+                    host: process.env.REACT_APP_SERVER ?? 'localhost',
                     port: 9000,
                     path: '/',
                     debug: 3
