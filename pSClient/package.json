@@ -1,7 +1,6 @@
 {
-  "name": "p2p-file-transfer",
+  "name": "peer_share",
   "version": "0.1.0",
-  "homepage": "https://chidokun.github.io/p2p-file-transfer",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.0.1",

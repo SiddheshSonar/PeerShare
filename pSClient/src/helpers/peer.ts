@@ -1,5 +1,6 @@
 import Peer, {DataConnection} from "peerjs";
 import {message} from "antd";
+import { store } from "../store";
 
 export enum DataType {
     FILE = 'FILE',
@@ -82,9 +83,21 @@ export const PeerConnection = {
     }),
     onIncomingConnection: (callback: (conn: DataConnection) => void) => {
         peer?.on('connection', function (conn) {
+            const state = store.getState()
+            const me = state.peer.mE;
+            console.log("ME",me);
             console.log("Incoming connection: " + conn.peer)
-            connectionMap.set(conn.peer, conn)
-            callback(conn)
+            console.log("Cmap size", connectionMap.size);
+            if (me && connectionMap.size > 0) {
+                conn.close()
+                // callback(conn)
+                return
+            }
+            else {
+                connectionMap.set(conn.peer, conn)
+                console.log("Cmap", connectionMap);
+                callback(conn)
+            }
         });
     },
     onConnectionDisconnected: (id: string, callback: () => void) => {
@@ -134,6 +147,22 @@ export const PeerConnection = {
                 callback(data)
             })
         }
-    }
+    },
+
+    closeConnection: (id: string) => new Promise<void>((resolve, reject) => {
+        if (!connectionMap.has(id)) {
+            reject(new Error("Connection didn't exist"))
+        }
+        try {
+            let conn = connectionMap.get(id)
+            if (conn) {
+                conn.close()
+                connectionMap.delete(id)
+            }
+            resolve()
+        } catch (err) {
+            reject(err)
+        }
+    })
 
 }

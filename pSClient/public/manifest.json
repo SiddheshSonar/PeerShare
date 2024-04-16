@@ -1,6 +1,6 @@
 {
-  "short_name": "P2P File Transfer",
-  "name": "P2P File Transfer",
+  "short_name": "PeerShare",
+  "name": "PeerShare",
   "icons": [
     {
       "src": "favicon.ico",

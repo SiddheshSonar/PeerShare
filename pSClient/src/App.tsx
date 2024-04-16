@@ -1,13 +1,13 @@
 import React from 'react';
-import {Button, Card, Col, Input, Menu, MenuProps, message, Row, Space, Typography, Upload, UploadFile} from "antd";
-import {CopyOutlined, UploadOutlined} from "@ant-design/icons";
-import {useAppDispatch, useAppSelector} from "./store/hooks";
-import {startPeer, stopPeerSession} from "./store/peer/peerActions";
+import { Button, Card, Col, Input, Menu, MenuProps, message, Row, Space, Typography, Upload, UploadFile } from "antd";
+import { CopyOutlined, UploadOutlined } from "@ant-design/icons";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { startPeer, stopPeerSession, toggleMutualExclusion } from "./store/peer/peerActions";
 import * as connectionAction from "./store/connection/connectionActions"
-import {DataType, PeerConnection} from "./helpers/peer";
-import {useAsyncState} from "./helpers/hooks";
+import { DataType, PeerConnection } from "./helpers/peer";
+import { useAsyncState } from "./helpers/hooks";
 
-const {Title} = Typography
+const { Title } = Typography
 type MenuItem = Required<MenuProps>['items'][number]
 
 function getItem(
@@ -45,6 +45,10 @@ export const App: React.FC = () => {
         connection.id != null ? dispatch(connectionAction.connectPeer(connection.id || "")) : message.warning("Please enter ID")
     }
 
+    const handleDisconnectPeer = (id: string) => {
+        dispatch(connectionAction.disconnectPeer(id))
+    }
+
     const [fileList, setFileList] = useAsyncState([] as UploadFile[])
     const [sendLoading, setSendLoading] = useAsyncState(false)
 
@@ -60,7 +64,7 @@ export const App: React.FC = () => {
         try {
             await setSendLoading(true);
             let file = fileList[0] as unknown as File;
-            let blob = new Blob([file], {type: file.type});
+            let blob = new Blob([file], { type: file.type });
 
             await PeerConnection.sendConnection(connection.selectedId, {
                 dataType: DataType.FILE,
@@ -79,32 +83,32 @@ export const App: React.FC = () => {
 
     return (
         <Row
-        style={{
-            // backgroundColor: "blue",
-            // backgroundColor: "#9b69f1",
-            height: "97vh",
-            boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)",
-            borderRadius: 15,
-        }} 
-        justify={"center"} align={"top"}>
-            <Col 
-            xs={24} sm={24} md={20} lg={16} xl={12}>
+            style={{
+                // backgroundColor: "blue",
+                // backgroundColor: "#9b69f1",
+                height: "97vh",
+                boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)",
+                borderRadius: 15,
+            }}
+            justify={"center"} align={"top"}>
+            <Col
+                xs={24} sm={24} md={20} lg={16} xl={12}>
                 <Card
-                style={{
-                    // marginTop: "20px",
-                    backgroundColor: "#9b69f1",
-                }}  
+                    style={{
+                        // marginTop: "20px",
+                        backgroundColor: "#9b69f1",
+                    }}
                 >
-                    <Title level={2} style={{textAlign: "center", fontWeight: "bold", color: "white"}}>P2P File Transfer</Title>
-                        <Card
+                    <Title level={2} style={{ textAlign: "center", fontWeight: "bold", color: "white" }}>PeerShare</Title>
+                    <Card
                         style={{
                             // width: "100%",
                             // display: "flex",
                             // alignItems: "center",
                             // justifyContent: "center",
-                        }} 
+                        }}
                         hidden={peer.started}>
-                            <Button
+                        <Button
                             hidden={peer.started}
                             style={{
                                 color: "white",
@@ -116,20 +120,20 @@ export const App: React.FC = () => {
                                 letterSpacing: "1px",
                                 // scaling on hover
                                 transition: "all 0.3s",
-                            }} 
+                            }}
                             onClick={handleStartSession} loading={peer.loading}>Start</Button>
-                        </Card>
-                        <Card hidden={!peer.started}>
-                            <Space direction="horizontal">
-                                <div>ID: {peer.id}</div>
-                                <Button icon={<CopyOutlined/>} onClick={async () => {
-                                    await navigator.clipboard.writeText(peer.id || "")
-                                    message.info("Copied: " + peer.id)
-                                }}/>
-                                <Button danger onClick={handleStopSession}>Stop</Button>
-                            </Space>
-                        </Card>
-                        <div
+                    </Card>
+                    <Card hidden={!peer.started}>
+                        <Space direction="horizontal">
+                            <div>ID: {peer.id}</div>
+                            <Button icon={<CopyOutlined />} onClick={async () => {
+                                await navigator.clipboard.writeText(peer.id || "")
+                                message.info("Copied: " + peer.id)
+                            }} />
+                            <Button danger onClick={handleStopSession}>Stop</Button>
+                        </Space>
+                    </Card>
+                    <div
                         style={{
                             // width: "100%",
                             marginTop: "20px",
@@ -138,16 +142,16 @@ export const App: React.FC = () => {
                             // alignItems: "start",
                             // justifyContent: "start",
                             gap: "15px",
-                        }} 
+                        }}
                         hidden={!peer.started}>
-                            <Card>
-                                <Space direction="horizontal">
-                                    <Input placeholder={"ID"}
-                                           onChange={e => dispatch(connectionAction.changeConnectionInput(e.target.value))}
-                                           required={true}
-                                           />
-                                    <Button
-                                     style={{
+                        <Card>
+                            <Space direction="horizontal">
+                                <Input placeholder={"ID"}
+                                    onChange={e => dispatch(connectionAction.changeConnectionInput(e.target.value))}
+                                    required={true}
+                                />
+                                <Button
+                                    style={{
                                         color: "white",
                                         backgroundColor: "#7c3aed",
                                         // width: "150px",
@@ -157,53 +161,99 @@ export const App: React.FC = () => {
                                         letterSpacing: "1px",
                                         // scaling on hover
                                         transition: "all 0.3s",
-                                    }}  
+                                    }}
                                     onClick={handleConnectOtherPeer}
-                                            loading={connection.loading}>Connect</Button>
-                                </Space>
-                            </Card>
+                                    loading={connection.loading}>Connect</Button>
+                                
+                                <Button
+                                    style={{
+                                        color: "white",
+                                        backgroundColor: "#7c3aed",
+                                        // width: "150px",
+                                        // height: "50px",
+                                        fontSize: "0.75rem",
+                                        fontWeight: "bold",
+                                        letterSpacing: "1px",
+                                        // scaling on hover
+                                        transition: "all 0.3s",
+                                    }}
+                                    onClick={() => dispatch(toggleMutualExclusion())}
+                                    // loading={connection.loading}
+                                > {peer.mE ? "Disable ME" : "Enable ME"}</Button>
+                            </Space>
+                        </Card>
 
-                            <Card
+                        <Card
                             style={{
                                 marginTop: "20px",
-                            }} 
+                            }}
                             title="Connection">
-                                {
-                                    connection.list.length === 0
-                                        ? <div>Waiting for connection ...</div>
-                                        : <div>
-                                            Select a connection
-                                            <Menu selectedKeys={connection.selectedId ? [connection.selectedId] : []}
+                            {
+                                connection.list.length === 0
+                                    ? <div>Waiting for connection ...</div>
+                                    : <div>
+                                        Select a connection
+                                        {/* <Menu selectedKeys={connection.selectedId ? [connection.selectedId] : []}
                                                   onSelect={(item) => dispatch(connectionAction.selectItem(item.key))}
-                                                  items={connection.list.map(e => getItem(e, e, null))}/>
-                                        </div>
-                                }
+                                                  items={connection.list.map(e => getItem(e, e, null))}/> */}
 
-                            </Card>
-                            <Card style={{
-                                marginTop: "20px",
-                            }} title="Send File">
-                                <Upload 
+                                        <Menu
+                                            selectedKeys={connection.selectedId ? [connection.selectedId] : []}
+                                            onSelect={(item) => dispatch(connectionAction.selectItem(item.key))}
+                                        >
+                                            {connection.list.map(e => (
+                                                <Menu.Item key={e}
+                                                    style={{
+                                                        // alignItems: "center",
+                                                        display: 'inline-flex',
+                                                        justifyContent: 'space-between'
+
+                                                    }}
+                                                >
+                                                    <span>{e}</span>
+
+                                                    <Button
+                                                        danger
+                                                        onClick={() => handleDisconnectPeer(e)}
+                                                        style={{
+                                                            // float: 'right',
+                                                            marginLeft: '10px',
+                                                        }}
+                                                    >
+                                                        Disconnect
+                                                    </Button>
+                                                </Menu.Item>
+                                            ))}
+                                        </Menu>
+
+                                    </div>
+                            }
+
+                        </Card>
+                        <Card style={{
+                            marginTop: "20px",
+                        }} title="Send File">
+                            <Upload
                                 fileList={fileList}
-                                        maxCount={1}
-                                        onRemove={() => setFileList([])}
-                                        beforeUpload={(file) => {
-                                            setFileList([file])
-                                            return false
-                                        }}>
-                                    <Button icon={<UploadOutlined/>}>Select File</Button>
-                                </Upload>
-                                <Button
-                                    type="primary"
-                                    onClick={handleUpload}
-                                    disabled={fileList.length === 0}
-                                    loading={sendLoading}
-                                    style={{marginTop: 16}}
-                                >
-                                    {sendLoading ? 'Sending' : 'Send'}
-                                </Button>
-                            </Card>
-                        </div>
+                                maxCount={1}
+                                onRemove={() => setFileList([])}
+                                beforeUpload={(file) => {
+                                    setFileList([file])
+                                    return false
+                                }}>
+                                <Button icon={<UploadOutlined />}>Select File</Button>
+                            </Upload>
+                            <Button
+                                type="primary"
+                                onClick={handleUpload}
+                                disabled={fileList.length === 0}
+                                loading={sendLoading}
+                                style={{ marginTop: 16 }}
+                            >
+                                {sendLoading ? 'Sending' : 'Send'}
+                            </Button>
+                        </Card>
+                    </div>
                 </Card>
             </Col>
 

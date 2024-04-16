@@ -5,7 +5,7 @@ export const initialState: ConnectionState = {
     id: undefined,
     loading: false,
     list: [],
-    selectedId: undefined
+    selectedId: undefined,
 }
 
 export const ConnectionReducer: Reducer<ConnectionState> = (state = initialState, action) => {
@@ -33,7 +33,8 @@ export const ConnectionReducer: Reducer<ConnectionState> = (state = initialState
         return {...state, list: newList}
     } else if (action.type === ConnectionActionType.CONNECTION_ITEM_SELECT) {
         return {...state, selectedId: action.id}
-    } else {
+    }
+    else {
         return state
     }
 }

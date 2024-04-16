@@ -16,6 +16,10 @@ export const setLoading = (loading: boolean) => ({
     type: PeerActionType.PEER_LOADING, loading
 })
 
+export const toggleMutualExclusion = () => ({
+    type: PeerActionType.PEER_TOGGLE_ME
+})
+
 export const startPeer: () => (dispatch: Dispatch) => Promise<void>
     = () => (async (dispatch) => {
     dispatch(setLoading(true))
@@ -24,6 +28,8 @@ export const startPeer: () => (dispatch: Dispatch) => Promise<void>
         PeerConnection.onIncomingConnection((conn) => {
             const peerId = conn.peer
             message.info("Incoming connection: " + peerId)
+
+            if (peerId == null) return
             dispatch(addConnectionList(peerId))
             PeerConnection.onConnectionDisconnected(peerId, () => {
                 message.info("Connection closed: " + peerId)
@@ -43,5 +49,3 @@ export const startPeer: () => (dispatch: Dispatch) => Promise<void>
         dispatch(setLoading(false))
     }
 })
-
-
