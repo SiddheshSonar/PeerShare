@@ -11,7 +11,8 @@ import type { CorsOptions } from "cors";
 
 const y = yargs(hideBin(process.argv));
 
-const portEnvIsSet = !!process.env["PORT"];
+// const portEnvIsSet = !!process.env["PORT"];
+const portEnvIsSet = true;
 
 const opts = y
 	.usage("Usage: $0")
@@ -91,7 +92,7 @@ const opts = y
 if (!opts.port) {
 	// .port is only not set if the PORT env var is set
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	opts.port = parseInt(process.env["PORT"]!);
+	opts.port = parseInt(process.env["PORT"]! ?? '9000');
 }
 if (opts.cors) {
 	opts["corsOptions"] = {
