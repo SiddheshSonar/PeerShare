@@ -78,12 +78,46 @@ export const App: React.FC = () => {
     }
 
     return (
-        <Row justify={"center"} align={"top"}>
-            <Col xs={24} sm={24} md={20} lg={16} xl={12}>
-                <Card>
-                    <Title level={2} style={{textAlign: "center"}}>P2P File Transfer</Title>
-                        <Card hidden={peer.started}>
-                            <Button onClick={handleStartSession} loading={peer.loading}>Start</Button>
+        <Row
+        style={{
+            // backgroundColor: "blue",
+            // backgroundColor: "#9b69f1",
+            height: "97vh",
+            boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)",
+            borderRadius: 15,
+        }} 
+        justify={"center"} align={"top"}>
+            <Col 
+            xs={24} sm={24} md={20} lg={16} xl={12}>
+                <Card
+                style={{
+                    // marginTop: "20px",
+                    backgroundColor: "#9b69f1",
+                }}  
+                >
+                    <Title level={2} style={{textAlign: "center", fontWeight: "bold", color: "white"}}>P2P File Transfer</Title>
+                        <Card
+                        style={{
+                            // width: "100%",
+                            // display: "flex",
+                            // alignItems: "center",
+                            // justifyContent: "center",
+                        }} 
+                        hidden={peer.started}>
+                            <Button
+                            hidden={peer.started}
+                            style={{
+                                color: "white",
+                                backgroundColor: "#7c3aed",
+                                width: "150px",
+                                height: "50px",
+                                fontSize: "1.2rem",
+                                fontWeight: "bold",
+                                letterSpacing: "1px",
+                                // scaling on hover
+                                transition: "all 0.3s",
+                            }} 
+                            onClick={handleStartSession} loading={peer.loading}>Start</Button>
                         </Card>
                         <Card hidden={!peer.started}>
                             <Space direction="horizontal">
@@ -95,19 +129,45 @@ export const App: React.FC = () => {
                                 <Button danger onClick={handleStopSession}>Stop</Button>
                             </Space>
                         </Card>
-                        <div hidden={!peer.started}>
+                        <div
+                        style={{
+                            // width: "100%",
+                            marginTop: "20px",
+                            // display: "flex",
+                            flexDirection: "column",
+                            // alignItems: "start",
+                            // justifyContent: "start",
+                            gap: "15px",
+                        }} 
+                        hidden={!peer.started}>
                             <Card>
                                 <Space direction="horizontal">
                                     <Input placeholder={"ID"}
                                            onChange={e => dispatch(connectionAction.changeConnectionInput(e.target.value))}
                                            required={true}
                                            />
-                                    <Button onClick={handleConnectOtherPeer}
+                                    <Button
+                                     style={{
+                                        color: "white",
+                                        backgroundColor: "#7c3aed",
+                                        // width: "150px",
+                                        // height: "50px",
+                                        fontSize: "0.75rem",
+                                        fontWeight: "bold",
+                                        letterSpacing: "1px",
+                                        // scaling on hover
+                                        transition: "all 0.3s",
+                                    }}  
+                                    onClick={handleConnectOtherPeer}
                                             loading={connection.loading}>Connect</Button>
                                 </Space>
                             </Card>
 
-                            <Card title="Connection">
+                            <Card
+                            style={{
+                                marginTop: "20px",
+                            }} 
+                            title="Connection">
                                 {
                                     connection.list.length === 0
                                         ? <div>Waiting for connection ...</div>
@@ -120,8 +180,11 @@ export const App: React.FC = () => {
                                 }
 
                             </Card>
-                            <Card title="Send File">
-                                <Upload fileList={fileList}
+                            <Card style={{
+                                marginTop: "20px",
+                            }} title="Send File">
+                                <Upload 
+                                fileList={fileList}
                                         maxCount={1}
                                         onRemove={() => setFileList([])}
                                         beforeUpload={(file) => {

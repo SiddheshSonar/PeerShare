@@ -2,15 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {store} from "./store";
-import {Provider} from "react-redux";
+import { store } from "./store";
+import { Provider } from "react-redux";
+import './App.css';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <Provider store={store}>
-        <App/>
+        <div
+        style={{
+            width: "100%",
+            height: "100vh",
+            backgroundColor: "#f0f2f5"
+        }}
+        >
+            <App />
+        </div>
     </Provider>
 );
 
