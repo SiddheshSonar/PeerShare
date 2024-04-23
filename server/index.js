@@ -10,6 +10,7 @@ dotenv.config();
 const app = express();
 
 // app.use(cors());
+const DOMAIN = process.env.DOMAIN;
 app.use(
     cors({
       origin: DOMAIN ? DOMAIN : "http://localhost:3000",
