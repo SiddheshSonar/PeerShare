@@ -4,8 +4,8 @@ import init from './db/config.js';
 import dotenv from "dotenv";
 import rateLimit from 'express-rate-limit';
 import uR from './routers/userRouter.js';
-import { PeerServer } from 'peer';
-import fs from 'fs';
+// import { PeerServer } from 'peer';
+// import fs from 'fs';
 
 dotenv.config();
 
@@ -48,17 +48,23 @@ app.use('/api', apiRouter);
 
 apiRouter.use('/users', uR);
 
-const peerServer = PeerServer({ 
-  port: 9000, path: "/mpeer", 
-  ssl: DOMAIN != null ? {
-    key: fs.readFileSync(process.env.KEY),
-    cert: fs.readFileSync(process.env.CERT)
-  } : null
-});
+// const peerServer = PeerServer({ 
+//   port: 9000, path: "/mpeer", 
+//   // ssl: DOMAIN != null ? {
+//   //   // key: fs.readFileSync(process.env.KEY),
+//   //   // cert: fs.readFileSync(process.env.CERT)
+//   //   key : process.env.KEY,
+//   //   cert: process.env.CERT
+//   // } : null,
+//   ssl: {
+//     key : process.env.KEY,
+//     cert: process.env.CERT
+//   }
+// });
 
-peerServer.on('connection', (client) => {
-  console.log('client connected');
-});
+// peerServer.on('connection', (client) => {
+//   console.log('client connected');
+// });
 
 app.listen(PORT, () => {
     // init();

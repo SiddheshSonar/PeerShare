@@ -23,13 +23,13 @@ export const PeerConnection = {
     startPeerSession: () => new Promise<string>((resolve, reject) => {
         try {
             peer = new Peer(
-                {
-                    host: process.env.REACT_APP_SERVER ?? 'localhost',
-                    port: process.env.REACT_APP_SERVER != null ? 80 : 9000,
-                    path: '/mpeer',
-                    debug: 3,
-                    secure: process.env.REACT_APP_SERVER != null ? true : false,
-                }
+                // {
+                //     host: process.env.REACT_APP_SERVER ?? 'localhost',
+                //     port: process.env.REACT_APP_SERVER != null ? 80 : 9000,
+                //     path: '/mpeer',
+                //     debug: 3,
+                //     // secure: process.env.REACT_APP_SERVER != null ? true : false,
+                // }
             )
             peer.on('open', (id) => {
                 console.log('My ID: ' + id)
