@@ -51,7 +51,7 @@
 		"check": "tsc --noEmit",
 		"test": "npm run lint && jest",
 		"coverage": "jest --coverage",
-		"start": "node dist/bin/peerjs.js --port ${PORT:=9000}",
+		"start": "node dist/bin/peerjs.js --port ${PORT:=9000}  --path '/mpeer'",
 		"dev": "nodemon --watch src -e ts --exec 'npm run build && npm run start'",
 		"dev2": "nodemon --watch src -e ts --exec \"npm run build && npm run start\""
 	},
