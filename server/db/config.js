@@ -1,19 +1,24 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import mysql from "mysql2";
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
-const DB = process.env.MONGO;
+const dbConfig = {
+  connectionLimit: 2,
+  host: process.env.HOST,
+  user: process.env.DBUSER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
+  multipleStatements: true,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0
+};
 
-function init() {
-    // console.log("DB", DB);
-    mongoose.connect(DB, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }).then(() => {
-        console.log(`DB connected`);
-    }).catch((err) => 
-    console.log(`DB connection failed ${err}`));
-}
+const db  = mysql.createPool(
+  dbConfig
+);
 
-export default init;
+export default db;
