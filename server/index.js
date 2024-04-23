@@ -4,6 +4,8 @@ import init from './db/config.js';
 import dotenv from "dotenv";
 import rateLimit from 'express-rate-limit';
 import uR from './routers/userRouter.js';
+import { PeerServer } from 'peer';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -45,6 +47,18 @@ const apiRouter = express.Router();
 app.use('/api', apiRouter);
 
 apiRouter.use('/users', uR);
+
+const peerServer = PeerServer({ 
+  port: 9000, path: "/mpeer", 
+  ssl: DOMAIN != null ? {
+    key: fs.readFileSync(process.env.KEY),
+    cert: fs.readFileSync(process.env.CERT)
+  } : null
+});
+
+peerServer.on('connection', (client) => {
+  console.log('client connected');
+});
 
 app.listen(PORT, () => {
     // init();
