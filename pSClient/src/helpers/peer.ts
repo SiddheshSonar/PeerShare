@@ -25,8 +25,8 @@ export const PeerConnection = {
             peer = new Peer(
                 {
                     host: process.env.REACT_APP_SERVER ?? 'localhost',
-                    port: 9000,
-                    path: '/',
+                    port: process.env.REACT_APP_SERVER != null ? 80 : 9000,
+                    path: '/mpeer',
                     debug: 3
                 }
             )

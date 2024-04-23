@@ -49,7 +49,8 @@ export const Login: React.FC = () => {
         }
         console.log("signing up");
         // post request to the server
-        await fetch('http://localhost:5000/api/users/signup', {
+        const host = process.env.REACT_APP_API || 'http://localhost:5000';
+        await fetch(`${host}/api/users/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -85,7 +86,8 @@ export const Login: React.FC = () => {
         }
         console.log("logging in");
         // post request to the server
-        await fetch('http://localhost:5000/api/users/signin', {
+        const host = process.env.REACT_APP_API || 'http://localhost:5000';
+        await fetch(`${host}/api/users/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

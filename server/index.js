@@ -9,7 +9,13 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
+app.use(
+    cors({
+      origin: DOMAIN ? DOMAIN : "http://localhost:3000",
+      methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD", "DELETE"],
+    }),
+  );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
