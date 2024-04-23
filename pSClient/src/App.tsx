@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Card, Col, Input, Menu, MenuProps, message, Row, Space, Typography, Upload, UploadFile } from "antd";
 import { CopyOutlined, UploadOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
@@ -31,6 +31,13 @@ export const App: React.FC = () => {
     const peer = useAppSelector((state) => state.peer)
     const connection = useAppSelector((state) => state.connection)
     const dispatch = useAppDispatch()
+    const token = localStorage.getItem("token")
+
+    useEffect(() => {
+        if (!token) {
+            window.location.href = "/login"
+        }
+    }, [token])
 
     const handleStartSession = () => {
         dispatch(startPeer())
