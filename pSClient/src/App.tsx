@@ -27,7 +27,7 @@ function getItem(
 }
 
 export const App: React.FC = () => {
-
+    const user = JSON.parse(localStorage.getItem("user") || "{}")
     const peer = useAppSelector((state) => state.peer)
     const connection = useAppSelector((state) => state.connection)
     const dispatch = useAppDispatch()
@@ -96,6 +96,7 @@ export const App: React.FC = () => {
                 height: "97vh",
                 boxShadow: "0 0 10px 0 rgba(0,0,0,0.3)",
                 borderRadius: 15,
+                position: "relative",
             }}
             justify={"center"} align={"top"}>
             <Col
@@ -106,7 +107,36 @@ export const App: React.FC = () => {
                         backgroundColor: "#9b69f1",
                     }}
                 >
-                    <Title level={2} style={{ textAlign: "center", fontWeight: "bold", color: "white" }}>PeerShare</Title>
+                    <Title level={2} style={{ textAlign: "center", fontWeight: "bold", color: "white" }}>Welcome To PeerShare, {user.name}!</Title>
+                    {/* logout button */}
+                    <div
+                    style={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                    >
+                    <Button
+                        style={{
+                            color: "white",
+                            backgroundColor: "#ff3333",
+                            width: "100px",
+                            height: "40px",
+                            fontSize: "1rem",
+                            fontWeight: "bold",
+                            letterSpacing: "1px",
+                            transition: "all 0.3s",
+                            marginBottom: "20px",
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                        }}
+                        onClick={() => {
+                            localStorage.clear()
+                            window.location.href = "/login"
+                        }}>Logout</Button>
+                    </div>
                     <Card
                         style={{
                             // width: "100%",

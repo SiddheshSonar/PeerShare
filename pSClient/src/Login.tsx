@@ -48,6 +48,29 @@ export const Login: React.FC = () => {
             return;
         }
         console.log("signing up");
+        // post request to the server
+        await fetch('http://localhost:5000/api/users/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(signupInfo),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+            if (data.error) {
+                toast.error(data.error);
+                return;
+            }
+            toast.success(data.message);
+            setSignIn(true);
+            setSignupInfo({ name: '', email: '', password: '' });
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error('An error occurred');
+        });
     }
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -61,6 +84,32 @@ export const Login: React.FC = () => {
             return;
         }
         console.log("logging in");
+        // post request to the server
+        await fetch('http://localhost:5000/api/users/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(loginInfo),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+            if (data.status === 0) {
+                toast.error(data.message);
+                setBtnName('Log In');
+                return;
+            }
+            toast.success(data.message);
+            localStorage.setItem('token', data.data.uid);
+            localStorage.setItem('user', JSON.stringify(data.data));
+            window.location.href = '/share';
+        })
+        .catch((err) => {
+            console.log(err);
+            // toast.error('An error occurred');
+            setBtnName('Log In');
+        });
     }
 
     return (
@@ -103,6 +152,7 @@ export const Login: React.FC = () => {
                     style={{
                         fontSize: "2rem",
                         fontWeight: "bold",
+                        textAlign: "center",
                     }}
                     >
                         Welcome to PeerShare!
