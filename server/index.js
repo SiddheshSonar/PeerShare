@@ -22,8 +22,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 5000;
-
 var requestCount = 0;
 
 app.use((req, res, next) => {
@@ -66,8 +64,19 @@ apiRouter.use('/users', uR);
 //   console.log('client connected');
 // });
 
+const argv = key => {
+  if ( process.argv.includes( `--${ key }` ) ) return true;
+
+  const value = process.argv.find( element => element.startsWith( `--${ key }=` ) );
+
+  if ( !value ) return null;
+  
+  return value.replace( `--${ key }=` , '' );
+}
+
+const PORT = argv('PORT') || process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-    // init();
     console.clear();
     console.log(`Server @ http://localhost:${PORT}`);
 })
